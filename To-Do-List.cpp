@@ -156,7 +156,7 @@ void Addtask(const string &filename)
 	tasks.close();
 }
 
-void show_the_task(const string &filename)
+void show_the_task(const string &filename, const string &important)
 {
 	ifstream tasks(filename);
 	if (!tasks.is_open())
@@ -166,6 +166,13 @@ void show_the_task(const string &filename)
 	{
 		cout << sentence << endl;
 	}
+	ifstream important1(important);
+	if(!important1.is_open())
+		cerr << "Error : Task file is not opened." << endl;
+	string imsentence;
+	while(getline(important1, imsentence))
+		cout << imsentence << endl;
+	important1.close();
 	tasks.close();
 }
 
@@ -401,7 +408,7 @@ int main()
 			else if (act == 'M' || act == 'm')
 				mark_task(filename, important, markedtask);
 			else if (act == 'T' || act == 't')
-				show_the_task(filename);
+				show_the_task(filename, important);
 			else if (act == 'E' || act == 'e')
 			{
 				std::cout << "Are sure exit the page please write 'SURE' : ";
