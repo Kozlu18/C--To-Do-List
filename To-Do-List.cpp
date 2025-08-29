@@ -305,10 +305,27 @@ void mark_task(const string &filename, const string &important, const string & m
 			cout << "Please enter the task ID number : ";
 			int N;
 			cin >> N;
+			string hedef_cumle = task[N];
+			stringstream ss(hedef_cumle);
+			string kelimeler;
+			vector<string> word;
+			while(ss >> kelimeler)
+				word.push_back(kelimeler);
 			ofstream markedtasks(markedtask, ios::app);
 			if (markedtasks.is_open())
 			{
-				markedtasks << task[N] << endl;
+				for(int i = 0; i < word.size(); i++)
+				{
+					if(word[i] == "To")
+						continue;
+					if(word[i] == "be")
+						continue;
+					if(word[i] == "done")
+						continue;
+					markedtasks << word[i] << " ";
+					
+				}
+				markedtasks << "Done" << endl;
 				markedtasks.close();
 			}
 			deletet(filename);
