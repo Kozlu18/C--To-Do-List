@@ -11,6 +11,8 @@
 
 using namespace std;
 
+string email_input, password_input;
+
 struct User
 {
 	string username;
@@ -43,7 +45,6 @@ bool Is_Valid_Email(string email)
 
 bool Login(string &username)
 {
-	string email_input, password_input;
 	int attempts = 0;
 
 	cout << "Please enter email: ";
@@ -154,6 +155,99 @@ void Addtask(const string &filename)
 			break;
 	}
 	tasks.close();
+}
+
+void i_show_important(vector<string>& important2, const string &important)
+{
+	ifstream important1(important);
+	if(!important1.is_open())
+		cerr << "Error : İmportant tasks file is not found." << endl;
+	string sentence;
+	while(getline(important1, sentence))
+	{
+		cout << sentence << endl;
+		important2.push_back(sentence);
+	}
+	important1.close();
+}
+
+void t_delete_task(vector<string>& task3, const string& filename)
+{
+	ifstream tasks(filename);
+	if(!tasks.is_open())
+		cerr << "Error : Unable tasks file" << endl;
+	string sentence;
+	while(getline(tasks, sentence))
+	{
+		cout << sentence << endl;
+		task3.push_back(sentence);
+	}	
+	tasks.close();
+}
+
+void delete_task(const string &filename, const string &important)
+{
+	bool d_t_e = false;
+	while(!d_t_e)
+	{
+		cout << "You delete important task or you delete task" << endl;
+		cout << "IF you delete important tasks please enter 'I' or you delete tasks please enter 'T' or exit enter 'E' : " << endl;
+
+		char dtact;
+		cin >> dtact;
+
+		if(dtact == 'I' || dtact == 'i')
+		{
+			vector<string> important2;
+			i_show_important(important2, important);
+			cout << "Please enter task ID : ";
+
+			int id;
+			cin >> id;
+
+			if(id < 0 || id >= important2.size()) {
+				cout << "Invalid task ID. Please try again." << endl;
+				continue;
+			}
+
+			ofstream important1(important);
+			for(int i = 0; i < important2.size(); i++)
+			{
+				if(id == i)
+					continue;
+				string sentence1 = important2[i];
+				important1 << sentence1 << endl;
+			}
+			important1.close();
+		}
+		else if(dtact == 'T' || dtact == 't')
+		{
+			vector<string> task3;
+			t_delete_task(task3, filename);	
+			cout << "Please enter task ID : ";
+
+			int id;
+			cin >> id;
+
+			if(id < 0 || id >= task3.size()) {
+				cout << "Invalid task ID. Please try again." << endl;
+				continue;
+			}
+
+			ofstream tasks(filename);
+			for(int i = 0; i < task3.size(); i++)
+			{
+				if(id == i)
+					continue;
+				string sentence1 = task3[i];
+				tasks << sentence1 << endl;
+			}
+			tasks.close();
+		}
+		else if(dtact == 'E' || dtact == 'e')
+			d_t_e = true;
+	}
+	cout << endl;
 }
 
 void show_the_task(const string &filename, const string &important)
@@ -388,6 +482,7 @@ int main()
 		while (login)
 		{
 			std::cout << "A : Add task : " << endl;
+			std::cout << "D : Delete task : " << endl;
 			std::cout << "I : Important : " << endl;
 			std::cout << "M : Mark as done : " << endl;
 			std::cout << "T : Show the task : " << endl;
@@ -403,6 +498,8 @@ int main()
 
 			if (act == 'A' || act == 'a')
 				Addtask(filename);
+			else if(act == 'D' ||act == 'd')
+				delete_task(filename, important);
 			else if (act == 'I' || act == 'i')
 				Important(filename, important);
 			else if (act == 'M' || act == 'm')
@@ -411,20 +508,12 @@ int main()
 				show_the_task(filename, important);
 			else if (act == 'E' || act == 'e')
 			{
-				std::cout << "Are sure exit the page please write 'SURE' : ";
-				string lexit;
-				std::cin >> lexit;
-				while (lexit != "SURE")
-				{
-					std::cout << "You writed wrong 'SURE'. Please try again : ";
-					std::cin >> lexit;
-				}
 				std::cout << "Returning the login and Singup page.";
-				this_thread::sleep_for(chrono::seconds(1));
-				std::cout << ".";
-				this_thread::sleep_for(chrono::seconds(1));
-				std::cout << ".";
-				this_thread::sleep_for(chrono::seconds(1));
+				for(int i = 0; i < 2; i++)
+				{
+					this_thread::sleep_for(chrono::seconds(1));
+					std::cout << ".";
+				}
 				std::cout << endl << "You returned Login and Singup page." << endl;
 				login = false;
 			}
