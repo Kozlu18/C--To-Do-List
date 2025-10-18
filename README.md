@@ -4,3 +4,4 @@
 # Mark as done for task
 # Feature to save data in a txt file
 # Delete the tasks
+# Change personal information
