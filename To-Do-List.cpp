@@ -8,10 +8,11 @@
 #include <limits>
 #include <fstream>
 #include <direct.h>
+#include <cstdio>
 
 using namespace std;
 
-string email_input, password_input;
+string email_input, password_input, username_file;
 
 struct User
 {
@@ -59,7 +60,7 @@ bool Login(string &username)
 		return false;
 	}
 
-	string username_file, email_file, password_file;
+	string email_file, password_file;
 	while (file >> username_file >> email_file >> password_file)
 	{
 		if (email_file == email_input && password_file == password_input)
@@ -133,7 +134,7 @@ int findmaxid(const string &filename)
 
 void Addtask(const string &filename)
 {
-	ofstream tasks(filename, ios::app);
+	ofstream tasks(filename);
 	bool addtask = true;
 	int yeni_id = findmaxid(filename) + 1;
 	if (!tasks.is_open())
@@ -268,6 +269,7 @@ void show_the_task(const string &filename, const string &important)
 		cout << imsentence << endl;
 	important1.close();
 	tasks.close();
+	this_thread::sleep_for(chrono::seconds(3));
 }
 
 void show_important(vector<string>& import, const string &filename)
@@ -282,6 +284,7 @@ void show_important(vector<string>& import, const string &filename)
 		import.push_back(sentence);
 	}
 	tasks.close();
+	this_thread::sleep_for(chrono::seconds(3));
 }
 
 void deletei(const string &filename)
@@ -459,23 +462,217 @@ void mark_task(const string &filename, const string &important, const string & m
 	}
 }
 
+void save_information(vector<string>& username1, vector<string>& mail, vector<string>& password)
+{
+	string username2, mail1, password1;
+	ifstream user("users.txt");
+	if(!user.is_open())
+		cerr << "Error : Unable users file" << endl;
+	else{
+		while(user >> username2 >> mail1 >> password1)
+			{
+				username1.push_back(username2);
+				mail.push_back(mail1);
+				password.push_back(password1);
+			}
+		user.close();
+	}
+}
+
+void copy_task(const string& filename, const string& important, const string& markedtask, 
+	vector<string>& tasksc, vector<string>& itasksc, vector<string>& mtasksc)
+{
+	ifstream task(filename);
+	if(!task.is_open())
+		cerr << "Error : Tasks file is not found." << endl;
+	else{
+		string sentence;
+		while(getline(task, sentence))
+			tasksc.push_back(sentence);
+	}
+	task.close();
+
+	ifstream important1(important);
+	if(!important1.is_open())
+		cerr << "Error : İmportant tasks file is not found." << endl;
+	else{
+		string sentence;
+		while(getline(important1, sentence))
+			itasksc.push_back(sentence);
+	}
+	important1.close();
+
+	ifstream markedtasks(markedtask);
+	if(!markedtasks.is_open())
+		cerr << "Error : Markedtasks file is not found." << endl;
+	else{
+		string sentence;
+		while(getline(markedtasks, sentence))
+			mtasksc.push_back(sentence);
+	}
+	markedtasks.close();
+}
+
+void save_task(const string& filename, const vector<string>& taskc)
+{
+	ofstream tasks(filename);
+	if(taskc.size() == 0)
+		cout << "Dont write any tasks." << endl;
+	else{
+		for(int i = 0; i < taskc.size(); i++)
+		{
+			tasks << taskc[i] << endl;
+		}
+		tasks.close();
+	}
+}
+
+void save_itask(const string& important, const vector<string>& itaskc)
+{
+	ofstream important1(important);
+	if(itaskc.size() == 0)
+		cout << "Dont write any important task" << endl;
+	else{
+		for(int i = 0; i < itaskc.size(); i++)
+			important1 << itaskc[i] << endl;
+		important1.close();
+	}
+}
+
+void save_mtask(const string& markedtasks, const vector<string>& mtaskc)
+{
+	ofstream markedtask(markedtasks);
+	if(mtaskc.size() == 0)
+		cout << "Dont write any marked taks" << endl;
+	else{
+		for(int i = 0; i < mtaskc.size(); i++)
+		{
+			markedtask << mtaskc[i] << endl;
+		}
+		markedtask.close();
+	}
+}
+
+void change_information(string& filename, string& important, string& markedtask, bool& login, string& username)
+{
+	bool ciexit = false;
+	vector<string> mail, password, username1;
+	vector<string> tasksc, itasksc, mtasksc;
+	save_information(username1, mail, password);
+	while(!ciexit)
+	{
+		std::cout << "P : Change password : " << endl;
+		std::cout << "U : Change username : " << endl;
+		std::cout << "E : Exit the page : " << endl;
+		std::cout << "What will do : ";
+
+		char ciact;
+		cin >> ciact;
+		if(ciact == 'P' || ciact == 'p')
+		{
+			string password2;
+			while(password2 != password_input)
+			{
+				std::cout << "Please enter password" << endl;
+				cin >> password2;
+			}
+			int idx = 0;
+			for(int i = 0; i < password.size(); i++)
+				if(password[i] == password2)
+					idx = i;
+			do
+			{
+				cout << "Please enter new password " << endl;
+				cin >> password2;
+			} while (!Is_Valid_Password(password2));
+			
+			ofstream user("users.txt");
+			for(int i = 0; i < username1.size(); i++)
+			{
+				user << username1[i] << " " << mail[i] << " ";
+				if(idx == i)
+					user << password2 << endl;
+				else
+					user << password[i] << endl;
+			}
+			user.close();
+			login = false;
+			ciexit = true;
+		}
+		else if(ciact == 'U' || ciact == 'u')
+		{
+			std::cout << "Please enter new username : " << endl;
+			string username4;
+			cin >> username4;
+			ifstream tasks(filename);
+			if(!tasks.is_open())
+				continue;
+			else{
+				tasks.close();
+				copy_task(filename, important, markedtask, tasksc, itasksc, mtasksc);
+
+				const char* filename1 = filename.c_str();
+				remove(filename1);
+
+				const char* important123 = important.c_str();
+				remove(important123);
+
+				const char* markedtask123 = markedtask.c_str();
+				remove(markedtask123);
+				
+				filename = (username4 + "_tasks") + ".txt";
+				important = (username4 + "_important") + ".txt";
+				markedtask = (username4 + "_marked") + ".txt";
+
+				save_task(filename, tasksc);
+				save_itask(important, itasksc);
+				save_mtask(markedtask, mtasksc);
+
+				int idx = 0;
+				for(int i = 0; i < password.size(); i++)
+					if(username1[i] == username_file)
+						idx = i;
+
+				ofstream user("users.txt");
+				for(int i = 0; i < username1.size(); i++)
+				{
+					if(i == idx)
+						user << username4 << " " << mail[i] << " " << password[i] << endl;
+					else
+						user << username1[i] << " " << mail[i] << " " << password[i] << endl;
+				}
+				user.close();
+				username = username4;
+			}
+
+		}
+		else if(ciact == 'E' || ciact == 'e')
+			ciexit = true;
+		else 
+			std::cout << "You entered wrong key" << endl;
+	} 
+}
+
 int main()
 {
-	while (true)
+	bool siteexit = false;
+	while (!siteexit)
 	{
 		string username;
 		std::cout << "\n---Welcome to the To-Do-List ---" << endl;
 		bool login = false;
 		User user;
-		while (!login)
+		while (!login && !siteexit)
 		{
-			std::cout << endl << "Please you have account enter 'L' or you dont have account please enter 'S' : ";
+			std::cout << endl << "Please you have account enter 'L' or you dont have account please enter 'S' or you exit press 'E' : ";
 			char action;
 			std::cin >> action;
 			if (action == 'S' || action == 's')
 				Singup(user);
 			else if (action == 'L' || action == 'l')
 				login = Login(username);
+			else if(action == 'E' || action == 'e')
+				siteexit = true;
 			else
 				std::cout << "You entered wrong key. Please try again." << endl;
 		}
@@ -486,6 +683,7 @@ int main()
 			std::cout << "I : Important : " << endl;
 			std::cout << "M : Mark as done : " << endl;
 			std::cout << "T : Show the task : " << endl;
+			std::cout << "C : Change the personal information : " << endl;
 			std::cout << "E : Return the login or singup page : " << endl;
 			std::cout << "What your choice : ";
 
@@ -506,15 +704,11 @@ int main()
 				mark_task(filename, important, markedtask);
 			else if (act == 'T' || act == 't')
 				show_the_task(filename, important);
+			else if(act == 'C' || act == 'c')
+				change_information(filename, important, markedtask, login, username);
 			else if (act == 'E' || act == 'e')
 			{
 				std::cout << "Returning the login and Singup page.";
-				for(int i = 0; i < 2; i++)
-				{
-					this_thread::sleep_for(chrono::seconds(1));
-					std::cout << ".";
-				}
-				std::cout << endl << "You returned Login and Singup page." << endl;
 				login = false;
 			}
 			else
