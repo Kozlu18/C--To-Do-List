@@ -134,7 +134,7 @@ int findmaxid(const string &filename)
 
 void Addtask(const string &filename)
 {
-	ofstream tasks(filename, ios::app);
+	ofstream tasks(filename);
 	bool addtask = true;
 	int yeni_id = findmaxid(filename) + 1;
 	if (!tasks.is_open())
@@ -269,6 +269,7 @@ void show_the_task(const string &filename, const string &important)
 		cout << imsentence << endl;
 	important1.close();
 	tasks.close();
+	this_thread::sleep_for(chrono::seconds(3));
 }
 
 void show_important(vector<string>& import, const string &filename)
@@ -283,6 +284,7 @@ void show_important(vector<string>& import, const string &filename)
 		import.push_back(sentence);
 	}
 	tasks.close();
+	this_thread::sleep_for(chrono::seconds(3));
 }
 
 void deletei(const string &filename)
@@ -602,10 +604,11 @@ void change_information(string& filename, string& important, string& markedtask,
 			std::cout << "Please enter new username : " << endl;
 			string username4;
 			cin >> username4;
-			ifstream tasks1(filename);
-			if(!tasks1.is_open())
+			ifstream tasks(filename);
+			if(!tasks.is_open())
 				continue;
 			else{
+				tasks.close();
 				copy_task(filename, important, markedtask, tasksc, itasksc, mtasksc);
 
 				const char* filename1 = filename.c_str();
