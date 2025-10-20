@@ -134,7 +134,7 @@ int findmaxid(const string &filename)
 
 void Addtask(const string &filename)
 {
-	ofstream tasks(filename);
+	ofstream tasks(filename, ios::app);
 	bool addtask = true;
 	int yeni_id = findmaxid(filename) + 1;
 	if (!tasks.is_open())
