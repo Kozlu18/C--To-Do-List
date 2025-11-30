@@ -1,4 +1,4 @@
-#include "Change_Ýnformation.h"
+#include "Change_Information.h"
 #include "Login.h"
 #include <string>
 #include <fstream>
@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool Change_Ýnformation::userExit;
+bool Change_Information::userExit;
 
 bool Is_Valid_Password(const string& password)
 {
@@ -54,7 +54,7 @@ void copy_task(const string& filename, const string& important, const string& ma
 
 	ifstream important1(important);
 	if (!important1.is_open())
-		cerr << "Error : Ýmportant tasks file is not found." << endl;
+		cerr << "Error : Ä°mportant tasks file is not found." << endl;
 	else {
 		string sentence;
 		while (getline(important1, sentence))
@@ -113,7 +113,7 @@ void save_mtask(const string& markedtasks, const vector<string>& mtaskc)
 	}
 }
 
-void Change_Ýnformation::change_information()
+void Change_Information::change_information()
 {
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
@@ -160,7 +160,7 @@ void Change_Ýnformation::change_information()
 					user << password[i] << endl;
 			}
 			user.close();
-			Change_Ýnformation::userExit = true;
+			Change_Information::userExit = true;
 			ciexit = true;
 		}
 		else if (ciact == 'U' || ciact == 'u')
