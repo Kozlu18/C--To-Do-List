@@ -1,5 +1,5 @@
 #pragma once
-class Change_›nformation
+class Change_√ùnformation
 {
 public:
 	static void change_information();
