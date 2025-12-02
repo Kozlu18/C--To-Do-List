@@ -47,10 +47,10 @@ void Tasks::AddTask()
 	while (addtask)
 	{
 		cout << "Please enter the task : " << endl;
-		string cümle;
+		string cÃ¼mle;
 		cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
-		getline(cin, cümle);
-		filename << "ID : " << yeni_id << " " << "Task : " << cümle << " " << "Status : " << "To be done" << endl;
+		getline(cin, cÃ¼mle);
+		filename << "ID : " << yeni_id << " " << "Task : " << cÃ¼mle << " " << "Status : " << "To be done" << endl;
 		yeni_id += 1;
 		cout << "IF you exit the page please enter 'E' or you continue add the task please enter 'C' : ";
 		char action;
@@ -63,7 +63,112 @@ void Tasks::AddTask()
 	filename.close();
 }
 
-void show_important(vector<string>& import, const string& tasks)
+void save_i(const string& important, vector<string>* itask = new vector<string>)
+{
+	ifstream important2(important);
+	if (!important2.is_open())
+		cerr << "Error : Unable important txt file." << endl;
+	else {
+		string sentence;
+		while (getline(important2, sentence))
+		{
+			cout << sentence << endl;
+			itask->push_back(sentence);
+		}
+	}
+	important2.close();
+}
+
+void save_t(const string& tasks, vector<string>* tasks2 = new vector<string>)
+{
+	ifstream task(tasks);
+	if (!task.is_open())
+		cerr << "Error : Unable tasks txt file." << endl;
+	else {
+		string sentence;
+		while (getline(task, sentence))
+		{
+			cout << sentence << endl;
+			tasks2->push_back(sentence);
+		}
+		task.close();
+	}
+}
+
+void select2()
+{
+	string tasks = (Login::username_file2 + "_tasks") + ".txt";
+	string important = (Login::username_file2 + "_important") + ".txt";
+
+	vector<string>* itask = new vector<string>;
+	vector<string>* tasks2 = new vector<string>;
+
+	cout << "I : Delete important tasks : " << endl;
+	cout << "D : Delete tasks : " << endl;
+
+	char sact;
+	cin >> sact;
+
+	if (sact == 'I' || sact == 'i')
+	{
+		save_i(important, itask);
+		cout << "Please enter the tasks id : " << endl;
+
+		int idx;
+		cin >> idx;
+
+		if (idx < itask->size()) {
+			itask->erase(itask->begin() + idx);
+		}
+
+		ofstream important2(important);
+		for (size_t i = 0; i < itask->size(); ++i) {
+			important2 << (*itask)[i];
+		}
+		important2.close();
+	}
+	else if (sact == 'D' || sact == 'd')
+	{
+		save_t(tasks, tasks2);
+		cout << "Please enter the tasks id : ";
+		int idx;
+		cin >> idx;
+
+		if (idx < tasks2->size())
+		{
+			tasks2->erase(tasks2->begin() + idx);
+		}
+
+		ofstream task(tasks);
+		for (size_t i = 0; i < tasks2->size(); i++)
+			task << (*tasks2)[i] << endl;
+		task.close();
+	}
+	else
+		cout << "You entered wrong key returning delete tasks page." << endl;
+}
+
+void Tasks::delete_tasks()
+{
+	bool dtext = false;
+	while (!dtext)
+	{
+		cout << "D : Delete Tasks : " << endl;
+		cout << "E : Exit the page : " << endl;
+
+		char dact;
+		cin >> dact;
+
+		if (dact == 'D' || dact == 'd')
+			select2();
+		else if (dact == 'E' || dact == 'e')
+			dtext = true;
+		else
+			cout << "You entered wrong key please try again." << endl;
+	}
+}
+
+void show_important(const string& tasks, vector<string>* import2 = new vector<string>)
 {
 	ifstream tasks2(tasks);
 	if (!tasks2.is_open())
@@ -72,7 +177,7 @@ void show_important(vector<string>& import, const string& tasks)
 	while (getline(tasks2, sentence))
 	{
 		cout << sentence << endl;
-		import.push_back(sentence);
+		import2->push_back(sentence);
 	}
 	tasks2.close();
 	this_thread::sleep_for(chrono::seconds(3));
@@ -93,6 +198,7 @@ void Tasks::important_taks()
 {
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
+	vector<string>* import2 = new vector<string>;
 
 	bool important1 = true;
 	while (important1)
@@ -109,8 +215,7 @@ void Tasks::important_taks()
 		{
 			ofstream important2(important, ios::app);
 
-			vector<string> import;
-			show_important(import, tasks);
+			show_important(tasks, import2);
 
 			cout << "Please enter task ID number : ";
 			int j;
@@ -118,7 +223,7 @@ void Tasks::important_taks()
 
 			if (important2.is_open())
 			{
-				important2 << import[j] << " " << "*" << endl;
+				important2 << (*import2)[j] << " " << "*" << endl;
 				important2.close();
 			}
 
@@ -127,11 +232,11 @@ void Tasks::important_taks()
 			ofstream tasks2(tasks, ios::app);
 			if (tasks2.is_open())
 			{
-				for (int i = 0; i < import.size(); i++)
+				for (int i = 0; i < import2->size(); i++)
 				{
 					if (i == j)
 						continue;
-					string sentence1 = import[i];
+					string sentence1 = (*import2)[i];
 					tasks2 << sentence1 << endl;
 				}
 				tasks2.close();
@@ -142,11 +247,12 @@ void Tasks::important_taks()
 			ifstream important2(important);
 			if (!important2.is_open())
 				cerr << "Error : Txt file is not opened." << endl;
-			string sentence2;
-			while (getline(important2, sentence2))
+			string* sentence2 = new string ;
+			while (getline(important2, *sentence2))
 			{
-				cout << sentence2 << endl;
+				cout << *sentence2 << endl;
 			}
+			this_thread::sleep_for(chrono::seconds(3));
 			important2.close();
 		}
 		else if (iact == 'E' || iact == 'e')
@@ -274,6 +380,7 @@ void Tasks::show_taks()
 	{
 		cout << sentence << endl;
 	}
+	filename.close();
 	ifstream important1(important);
 	if (!important1.is_open())
 		cerr << "Error : Important task file is not opened." << endl;
@@ -281,6 +388,5 @@ void Tasks::show_taks()
 	while (getline(important1, imsentence))
 		cout << imsentence << endl;
 	important1.close();
-	filename.close();
 	this_thread::sleep_for(chrono::seconds(3));
 }
