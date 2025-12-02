@@ -3,6 +3,7 @@
 
 #include "login.h"
 #include "Tasks.h"
+#include "Change_Information.h"
 #include <iostream>
 
 using namespace std;
@@ -13,7 +14,7 @@ int main()
     while (!siteexit)
     {
         bool login2 = false;
-        cout << "C : Create account or L : Login account" << endl;
+        cout << "C : Create account or L : Login account or E : exit console." << endl;
         char act;
         cin >> act;
         if (act == 'c' || act == 'C')
