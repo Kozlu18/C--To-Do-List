@@ -262,7 +262,7 @@ void Tasks::important_taks()
 	}
 }
 
-void show(vector<string>& task, const string& filename)
+void show(const string& filename, vector<string>* task = new vector<string>)
 {
 	ifstream tasks(filename);
 	if (!tasks.is_open())
@@ -273,7 +273,7 @@ void show(vector<string>& task, const string& filename)
 	while (getline(tasks, sentence))
 	{
 		cout << sentence << endl;
-		task.push_back(sentence);
+		task->push_back(sentence);
 	}
 	tasks.close();
 }
@@ -306,45 +306,52 @@ void Tasks::mark_task()
 		char maction;
 		cin >> maction;
 
-		vector<string> task;
+		vector<string>* task = new vector<string>;
 		if (maction == 'M' || maction == 'm')
 		{
-			show(task, tasks);
+			show(tasks, task);
 			cout << "Please enter the task ID number : ";
+
 			int N;
 			cin >> N;
-			string hedef_cumle = task[N];
+
+			string hedef_cumle = (*task)[N];
 			stringstream ss(hedef_cumle);
 			string kelimeler;
-			vector<string> word;
+			vector<string>* word = new vector<string>;
+
 			while (ss >> kelimeler)
-				word.push_back(kelimeler);
+				word->push_back(kelimeler);
+
 			ofstream markedtasks2(markedtasks, ios::app);
+
 			if (markedtasks2.is_open())
 			{
-				for (int i = 0; i < word.size(); i++)
+				for (int i = 0; i < word->size(); i++)
 				{
-					if (word[i] == "To")
+					if ((*word)[i] == "To")
 						continue;
-					if (word[i] == "be")
+					if ((*word)[i] == "be")
 						continue;
-					if (word[i] == "done")
+					if ((*word)[i] == "done")
 						continue;
-					markedtasks2 << word[i] << " ";
+					markedtasks2 << (*word)[i] << " ";
 
 				}
 				markedtasks2 << "Done" << endl;
 				markedtasks2.close();
 			}
+
 			deletet(tasks);
 			ofstream tasks1(tasks, ios::app);
+
 			if (tasks1.is_open())
 			{
-				for (int i = 0; i < task.size(); i++)
+				for (int i = 0; i < task->size(); i++)
 				{
 					if (i == N)
 						continue;
-					tasks1 << task[i] << endl;
+					tasks1 << (*task)[i] << endl;
 				}
 				tasks1.close();
 			}
