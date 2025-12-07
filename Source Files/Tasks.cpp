@@ -1,5 +1,6 @@
 #include "Tasks.h"
 #include "Login.h"
+#include "Settings.h"
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -95,6 +96,8 @@ void save_t(const string& tasks, vector<string>* tasks2 = new vector<string>)
 	}
 }
 
+bool bdftt; // Görevler kısmındaki dtf
+
 void select2()
 {
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
@@ -116,11 +119,26 @@ void select2()
 
 		int idx;
 		cin >> idx;
+		
+		bool bsure = false;
+		if (bdftt)
+		{
+			do
+			{
+				cout << "Please enter 'SURE' : ";
+				string sure;
+				cin >> sure;
+				if (sure == "SURE")
+					bsure = true;
+			} while (!bsure);
+		}
 
 		if (idx < itask->size()) {
 			itask->erase(itask->begin() + idx);
 		}
-
+		else
+			cout << "Dont deleted your tasks." << endl;
+		
 		ofstream important2(important);
 		for (size_t i = 0; i < itask->size(); ++i) {
 			important2 << (*itask)[i];
@@ -131,13 +149,30 @@ void select2()
 	{
 		save_t(tasks, tasks2);
 		cout << "Please enter the tasks id : ";
+
 		int idx;
 		cin >> idx;
+
+		bool bsure2 = false;
+
+		if (bdftt)
+		{
+			do
+			{
+				cout << "Please enter SURE : ";
+				string sure2;
+				cin >> sure2;
+				if (sure2 == "SURE")
+					bsure2 = true;
+			} while (!bsure2);
+		}
 
 		if (idx < tasks2->size())
 		{
 			tasks2->erase(tasks2->begin() + idx);
 		}
+		else
+			cout << "Dont deleted your task." << endl;
 
 		ofstream task(tasks);
 		for (size_t i = 0; i < tasks2->size(); i++)
@@ -153,6 +188,12 @@ void Tasks::delete_tasks()
 	bool dtext = false;
 	while (!dtext)
 	{
+		string setting = (Login::username_file2 + "_settings") + ".txt";
+		ifstream settingf(setting);
+		string empt;
+		while(settingf >> bdftt)
+		settingf.close();
+
 		cout << "D : Delete Tasks : " << endl;
 		cout << "E : Exit the page : " << endl;
 
@@ -315,7 +356,7 @@ void Tasks::mark_task()
 			int N;
 			cin >> N;
 
-			string hedef_cumle = (*task)[N];
+			string hedef_cumle =(*task)[N];
 			stringstream ss(hedef_cumle);
 			string kelimeler;
 			vector<string>* word = new vector<string>;
