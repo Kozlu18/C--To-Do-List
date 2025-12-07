@@ -14,6 +14,19 @@ string Login::username_file2;
 string Login::password_file2;
 int Forgetp::rand;
 
+void Clearl()
+{
+#if defined _WIN32
+	system("cls");
+	//clrscr(); // including header file : conio.h
+#elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+	system("clear");
+	//std::cout<< u8"\033[2J\033[1;1H"; //Using ANSI Escape Sequences 
+#elif defined (__APPLE__)
+	system("clear");
+#endif
+}
+
 bool is_valid_email(const string& email)
 {
 	return email.find("gmail.com") != string::npos ||
@@ -102,4 +115,10 @@ void Login::SingUp()
 	ofstream users("users.txt", ios::app);
 	users << username << " " << email << " " << password;
 	users.close();
+	string setting = (username + "_settings") + ".txt";
+	ofstream settingf(setting);
+	bool dtfl = false;
+	settingf << "DTF : " << dtfl << endl;
+	settingf.close();
+	Clearl();
 }
