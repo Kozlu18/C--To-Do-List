@@ -118,7 +118,8 @@ void Login::SingUp()
 	string setting = (username + "_settings") + ".txt";
 	ofstream settingf(setting);
 	bool dtfl = false;
-	settingf << "DTF : " << dtfl << endl;
+	bool nts = false;
+	settingf << "DTF : " << dtfl << " NTS : " << nts << endl;
 	settingf.close();
 	Clearl();
 }
