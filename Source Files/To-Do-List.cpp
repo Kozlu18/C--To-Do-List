@@ -6,8 +6,12 @@
 #include "Change_Information.h"
 #include "Settings.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
+
+bool Settings::nts;
+bool Settings::dtf;
 
 void Clear()
 {
@@ -44,6 +48,13 @@ int main()
         while (login2 && !Change_Information::userExit)
         {
             Clear();
+            string setting = (Login::username_file2 + "_settings") + ".txt";
+            ifstream settingf(setting);
+            string empt;
+
+            while (settingf >> empt >> empt >> Settings::dtf >> empt >> empt >> Settings::nts);
+            settingf.close();
+
             cout << "A : Add tasks : " << endl;
             cout << "D : Delete the tasks : " << endl;
             cout << "I : Important : " << endl;
