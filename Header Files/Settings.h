@@ -3,6 +3,8 @@ class Settings
 {
 public :
 	static void settings();
-	static bool dtf; // silmeden önce onayla
+	static bool dtf; 
+	static bool nts; 
 };
+
 
