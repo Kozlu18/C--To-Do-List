@@ -96,8 +96,6 @@ void save_t(const string& tasks, vector<string>* tasks2 = new vector<string>)
 	}
 }
 
-bool bdftt; // Görevler kısmındaki dtf
-
 void select2()
 {
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
@@ -121,7 +119,7 @@ void select2()
 		cin >> idx;
 		
 		bool bsure = false;
-		if (bdftt)
+		if (Settings::dtf == true)
 		{
 			do
 			{
@@ -155,7 +153,7 @@ void select2()
 
 		bool bsure2 = false;
 
-		if (bdftt)
+		if (Settings::dtf == true)
 		{
 			do
 			{
@@ -188,12 +186,6 @@ void Tasks::delete_tasks()
 	bool dtext = false;
 	while (!dtext)
 	{
-		string setting = (Login::username_file2 + "_settings") + ".txt";
-		ifstream settingf(setting);
-		string empt;
-		while(settingf >> bdftt)
-		settingf.close();
-
 		cout << "D : Delete Tasks : " << endl;
 		cout << "E : Exit the page : " << endl;
 
@@ -420,21 +412,44 @@ void Tasks::show_taks()
 	string important = (Login::username_file2 + "_important") + ".txt";
 	string markedtasks = (Login::username_file2 + "_marked") + ".txt";
 
-	ifstream filename(tasks);
-	if (!filename.is_open())
-		cerr << "Error : Task file is not opened." << endl;
-	string sentence;
-	while (getline(filename, sentence))
-	{
-		cout << sentence << endl;
-	}
-	filename.close();
-	ifstream important1(important);
-	if (!important1.is_open())
+	if(Settings::nts == true){
+		ifstream important1(important);
+		if (!important1.is_open())
 		cerr << "Error : Important task file is not opened." << endl;
-	string imsentence;
-	while (getline(important1, imsentence))
+		string imsentence;
+		while (getline(important1, imsentence))
 		cout << imsentence << endl;
-	important1.close();
-	this_thread::sleep_for(chrono::seconds(3));
+		important1.close();
+
+		ifstream filename(tasks);
+		if (!filename.is_open())
+		cerr << "Error : Task file is not opened." << endl;
+		string sentence;
+		while (getline(filename, sentence))
+		{
+			cout << sentence << endl;
+		}
+		filename.close();
+		this_thread::sleep_for(chrono::seconds(3));
+	}
+	else{
+		ifstream filename(tasks);
+		if (!filename.is_open())
+			cerr << "Error : Task file is not opened." << endl;
+		string sentence;
+		while (getline(filename, sentence))
+		{
+			cout << sentence << endl;
+		}
+		filename.close();
+		ifstream important1(important);
+		if (!important1.is_open())
+			cerr << "Error : Important task file is not opened." << endl;
+		string imsentence;
+		while (getline(important1, imsentence))
+			cout << imsentence << endl;
+		important1.close();
+		this_thread::sleep_for(chrono::seconds(3));
+	}
+
 }
