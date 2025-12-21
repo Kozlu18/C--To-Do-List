@@ -1,15 +1,17 @@
-#include "Tasks.h"
-#include "Login.h"
-#include "Settings.h"
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <thread>
-#include <chrono>
+#include "includes.h"
 
-using namespace std;
+void Clear15()
+{
+#if defined _WIN32
+    system("cls");
+    //clrscr(); // including header file : conio.h
+#elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
+    system("clear");
+    //std::cout<< u8"\033[2J\033[1;1H"; //Using ANSI Escape Sequences 
+#elif defined (__APPLE__)
+    system("clear");
+#endif
+}
 
 int findmaxid(const string& tasks)
 {
@@ -36,10 +38,9 @@ int findmaxid(const string& tasks)
 	return max_id;
 }
 
-
-void Tasks::AddTask()
+void Add_Tasks()
 {
-	string tasks = (Login::username_file2 + "_tasks") + ".txt";
+		string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	ofstream filename(tasks, ios::app);
 	bool addtask = true;
 	int yeni_id = findmaxid(tasks) + 1;
@@ -181,7 +182,7 @@ void select2()
 		cout << "You entered wrong key returning delete tasks page." << endl;
 }
 
-void Tasks::delete_tasks()
+void delete_tasks()
 {
 	bool dtext = false;
 	while (!dtext)
@@ -227,9 +228,9 @@ void deletei(const string& tasks)
 	}
 }
 
-void Tasks::important_taks()
+void important_tasks()
 {
-	string tasks = (Login::username_file2 + "_tasks") + ".txt";
+string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
 	vector<string>* import2 = new vector<string>;
 
@@ -322,7 +323,7 @@ void deletet(const string& filename)
 	}
 }
 
-void Tasks::mark_task()
+void mark_task()
 {
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
@@ -406,7 +407,7 @@ void Tasks::mark_task()
 	}
 }
 
-void Tasks::show_taks()
+void show_tasks()
 {
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
@@ -451,5 +452,37 @@ void Tasks::show_taks()
 		important1.close();
 		this_thread::sleep_for(chrono::seconds(3));
 	}
+}
 
+void Tasks::TasksPage()
+{
+	bool text = false;
+	while(!text)
+	{
+		Clear15();
+		cout << "A : Add tasks : " << endl;
+		cout << "D : Delete Tasks : " << endl;
+		cout << "I : Important tasks page : " << endl;
+		cout << "M : Mark as done tasks : " << endl;
+		cout << "S : Show Tasks : " << endl;
+		cout << "E : Exit the page : " << endl;
+
+		char lact1;
+		cin >> lact1;
+		
+		if(lact1 == 'A' || lact1 == 'a')
+			Add_Tasks();
+		else if (lact1 == 'D' || lact1 == 'd')
+            delete_tasks();
+        else if (lact1 == 'I' || lact1 == 'i')
+            important_tasks();
+        else if (lact1 == 'M' || lact1 == 'm')
+            mark_task();
+        else if (lact1 == 'S' || lact1 == 's')
+            show_tasks();
+		else if(lact1 == 'E' || lact1 == 'e')
+			text = true;
+		else
+			cout << "You entered wrong key please try again." << endl;
+	}
 }
