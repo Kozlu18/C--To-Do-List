@@ -55,31 +55,19 @@ int main()
             while (settingf >> empt >> empt >> Settings::dtf >> empt >> empt >> Settings::nts);
             settingf.close();
 
-            cout << "A : Add tasks : " << endl;
-            cout << "D : Delete the tasks : " << endl;
-            cout << "I : Important : " << endl;
-            cout << "M : Mark as done : " << endl;
-            cout << "T : Show the task : " << endl;
+            cout << "E : Edit tasks : " << endl;
             cout << "S : Settings : " << endl;
-            cout << "E : Return the login or singup page : " << endl;
+            cout << "R : Return the login or singup page : " << endl;
             cout << "What your choice : ";
 
             char lact;
             cin >> lact;
 
-            if (lact == 'A' || lact == 'a')
-                Tasks::AddTask();
-            else if (lact == 'D' || lact == 'd')
-                Tasks::delete_tasks();
-            else if (lact == 'I' || lact == 'i')
-                Tasks::important_taks();
-            else if (lact == 'M' || lact == 'm')
-                Tasks::mark_task();
-            else if (lact == 'T' || lact == 't')
-                Tasks::show_taks();
+            if (lact == 'E' || lact == 'e')
+                Tasks::TasksPage();
             else if (lact == 'S' || lact == 's')
                 Settings::settings();
-            else if (lact == 'E' || lact == 'e')
+            else if (lact == 'R' || lact == 'r')
                 login2 = false;
             else
                 cout << "You entered wrong key, Please try again." << endl;
