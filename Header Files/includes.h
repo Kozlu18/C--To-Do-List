@@ -12,5 +12,6 @@
 #include "Tasks.h"
 #include "Login.h"
 #include "Settings.h"
+#include "Change_Information.h"
 
 #endif
