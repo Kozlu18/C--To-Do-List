@@ -1,12 +1,7 @@
 // To-Do-List.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "login.h"
-#include "Tasks.h"
-#include "Change_Information.h"
-#include "Settings.h"
-#include <iostream>
-#include <fstream>
+#include "includes.h"
 
 using namespace std;
 
