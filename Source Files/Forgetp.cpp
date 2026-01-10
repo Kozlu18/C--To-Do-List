@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -49,7 +51,7 @@ void Forgetp::change_pass()
 	vector<string>* password = new vector<string>;
 	vector<string>* username1 = new vector<string>;
 
-	string email, pass;
+	string email, pass, pass2;
 	int code;
 
 	cout << "Please enter the code : ";
@@ -76,9 +78,12 @@ void Forgetp::change_pass()
 		cout << "You entered true mail" << endl;
 		do
 		{
-			cout << "Please enter new  : ";
+			cout << "Please enter new password : ";
 			cin >> pass;
-		} while (!is_valid_password2(pass));
+			cout << "Please enter again new password : ";
+			cin >> pass2;
+		} while (!is_valid_password2(pass) || pass2 != pass);
+		cout << "Password change succesfully." << endl;
 		ofstream user("users.txt");
 		for (int i = 0; i < username1->size(); i++)
 		{
@@ -89,5 +94,6 @@ void Forgetp::change_pass()
 				user << (*password)[i] << endl;
 		}
 		user.close();
+		this_thread::sleep_for(chrono::seconds(1));
 	}
 }
