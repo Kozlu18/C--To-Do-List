@@ -6,6 +6,8 @@
 #include <string>
 #include <cstdlib> 
 #include <ctime>
+#include <thread>
+#include <chrono>
 
 using namespace std;
 
@@ -92,8 +94,24 @@ bool Login::login()
 		Forgetp::change_pass();
 		return false;
 	}
-	else{
+	else {
 		cout << "You entered wrong key returning singup or login page." << endl;
+		return false;
+	}
+}
+
+bool Login::Check()
+{
+	ifstream users("users.txt");
+	if (!users.is_open())
+		cerr << "Error : Not found users file." << endl;
+	else {
+		string username_file3, email_file3, password_file3;
+		while (users >> username_file3 >> email_file3 >> password_file3)
+		{
+			if (email == email_file3)
+				return true;
+		}
 		return false;
 	}
 }
@@ -112,14 +130,26 @@ void Login::SingUp()
 		cout << "Please enter passwod : " << endl;
 		cin >> password;
 	} while (!is_valid_password(password));
-	ofstream users("users.txt", ios::app);
-	users << username << " " << email << " " << password;
-	users.close();
-	string setting = (username + "_settings") + ".txt";
-	ofstream settingf(setting);
-	bool dtfl = false;
-	bool nts = false;
-	settingf << "DTF : " << dtfl << " NTS : " << nts << endl;
-	settingf.close();
-	Clearl();
+	bool checktf;
+	checktf = Login::Check();
+	if (checktf == true)
+	{
+		cout << "You have account." << endl;
+		this_thread::sleep_for(chrono::seconds(1));
+		Clearl();
+	}
+	else
+	{
+		ofstream users("users.txt", ios::app);
+		users << username << " " << email << " " << password << endl;
+		users.close();
+		string setting = (username + "_settings") + ".txt";
+		ofstream settingf(setting);
+		bool dtfl = false;
+		bool nts = false;
+		settingf << "DTF : " << dtfl << " NTS : " << nts << endl;
+		settingf.close();
+		Clearl();
+	}
+
 }
