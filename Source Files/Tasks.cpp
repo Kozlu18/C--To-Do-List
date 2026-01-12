@@ -1,15 +1,16 @@
 #include "includes.h"
+namespace fs = std::filesystem;
 
 void Clear15()
 {
 #if defined _WIN32
-    system("cls");
-    //clrscr(); // including header file : conio.h
+	system("cls");
+	//clrscr(); // including header file : conio.h
 #elif defined (__LINUX__) || defined(__gnu_linux__) || defined(__linux__)
-    system("clear");
-    //std::cout<< u8"\033[2J\033[1;1H"; //Using ANSI Escape Sequences 
+	system("clear");
+	//std::cout<< u8"\033[2J\033[1;1H"; //Using ANSI Escape Sequences 
 #elif defined (__APPLE__)
-    system("clear");
+	system("clear");
 #endif
 }
 
@@ -40,7 +41,7 @@ int findmaxid(const string& tasks)
 
 void Add_Tasks()
 {
-		string tasks = (Login::username_file2 + "_tasks") + ".txt";
+	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	ofstream filename(tasks, ios::app);
 	bool addtask = true;
 	int yeni_id = findmaxid(tasks) + 1;
@@ -118,7 +119,7 @@ void select2()
 
 		int idx;
 		cin >> idx;
-		
+
 		bool bsure = false;
 		if (Settings::dtf == true)
 		{
@@ -137,7 +138,7 @@ void select2()
 		}
 		else
 			cout << "Dont deleted your tasks." << endl;
-		
+
 		ofstream important2(important);
 		for (size_t i = 0; i < itask->size(); ++i) {
 			important2 << (*itask)[i];
@@ -180,6 +181,7 @@ void select2()
 	}
 	else
 		cout << "You entered wrong key returning delete tasks page." << endl;
+
 }
 
 void delete_tasks()
@@ -230,7 +232,7 @@ void deletei(const string& tasks)
 
 void important_tasks()
 {
-string tasks = (Login::username_file2 + "_tasks") + ".txt";
+	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
 	vector<string>* import2 = new vector<string>;
 
@@ -281,7 +283,7 @@ string tasks = (Login::username_file2 + "_tasks") + ".txt";
 			ifstream important2(important);
 			if (!important2.is_open())
 				cerr << "Error : Txt file is not opened." << endl;
-			string* sentence2 = new string ;
+			string* sentence2 = new string;
 			while (getline(important2, *sentence2))
 			{
 				cout << *sentence2 << endl;
@@ -349,7 +351,7 @@ void mark_task()
 			int N;
 			cin >> N;
 
-			string hedef_cumle =(*task)[N];
+			string hedef_cumle = (*task)[N];
 			stringstream ss(hedef_cumle);
 			string kelimeler;
 			vector<string>* word = new vector<string>;
@@ -413,18 +415,18 @@ void show_tasks()
 	string important = (Login::username_file2 + "_important") + ".txt";
 	string markedtasks = (Login::username_file2 + "_marked") + ".txt";
 
-	if(Settings::nts == true){
+	if (Settings::nts == true) {
 		ifstream important1(important);
 		if (!important1.is_open())
-		cerr << "Error : Important task file is not opened." << endl;
+			cerr << "Error : Important task file is not opened." << endl;
 		string imsentence;
 		while (getline(important1, imsentence))
-		cout << imsentence << endl;
+			cout << imsentence << endl;
 		important1.close();
 
 		ifstream filename(tasks);
 		if (!filename.is_open())
-		cerr << "Error : Task file is not opened." << endl;
+			cerr << "Error : Task file is not opened." << endl;
 		string sentence;
 		while (getline(filename, sentence))
 		{
@@ -433,7 +435,7 @@ void show_tasks()
 		filename.close();
 		this_thread::sleep_for(chrono::seconds(3));
 	}
-	else{
+	else {
 		ifstream filename(tasks);
 		if (!filename.is_open())
 			cerr << "Error : Task file is not opened." << endl;
@@ -456,8 +458,18 @@ void show_tasks()
 
 void Tasks::TasksPage()
 {
+	if (fs::exists("Tasks") && fs::is_directory("Tasks")) {
+
+		fs::current_path("Tasks");
+
+		std::cout << "Folder entered. New Path: " << fs::current_path() << "\n";
+	}
+	else {
+		std::cout << "Error: Folder dont found.\n";
+	}
+
 	bool text = false;
-	while(!text)
+	while (!text)
 	{
 		Clear15();
 		cout << "A : Add tasks : " << endl;
@@ -469,19 +481,23 @@ void Tasks::TasksPage()
 
 		char lact1;
 		cin >> lact1;
-		
-		if(lact1 == 'A' || lact1 == 'a')
+
+		if (lact1 == 'A' || lact1 == 'a')
 			Add_Tasks();
 		else if (lact1 == 'D' || lact1 == 'd')
-            delete_tasks();
-        else if (lact1 == 'I' || lact1 == 'i')
-            important_tasks();
-        else if (lact1 == 'M' || lact1 == 'm')
-            mark_task();
-        else if (lact1 == 'S' || lact1 == 's')
-            show_tasks();
-		else if(lact1 == 'E' || lact1 == 'e')
+			delete_tasks();
+		else if (lact1 == 'I' || lact1 == 'i')
+			important_tasks();
+		else if (lact1 == 'M' || lact1 == 'm')
+			mark_task();
+		else if (lact1 == 'S' || lact1 == 's')
+			show_tasks();
+		else if (lact1 == 'E' || lact1 == 'e')
+		{
+			fs::path mevcutYol = fs::current_path();
+			fs::current_path(mevcutYol.parent_path());
 			text = true;
+		}
 		else
 			cout << "You entered wrong key please try again." << endl;
 	}
