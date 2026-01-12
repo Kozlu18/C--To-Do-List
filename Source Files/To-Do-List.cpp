@@ -4,6 +4,7 @@
 #include "includes.h"
 
 using namespace std;
+namespace fs = std::filesystem;
 
 bool Settings::nts;
 bool Settings::dtf;
@@ -51,6 +52,7 @@ int main()
             settingf.close();
 
             cout << "E : Edit tasks : " << endl;
+            cout << "L : Add new list : " << endl;
             cout << "S : Settings : " << endl;
             cout << "R : Return the login or singup page : " << endl;
             cout << "What your choice : ";
@@ -60,10 +62,16 @@ int main()
 
             if (lact == 'E' || lact == 'e')
                 Tasks::TasksPage();
+            else if (lact == 'L' || lact == 'l')
+                NList::ListPage();
             else if (lact == 'S' || lact == 's')
                 Settings::settings();
             else if (lact == 'R' || lact == 'r')
+            {
                 login2 = false;
+                fs::path mevcutYol = fs::current_path();
+                fs::current_path(mevcutYol.parent_path());
+            }
             else
                 cout << "You entered wrong key, Please try again." << endl;
         }
