@@ -1,15 +1,7 @@
-#include "Login.h"
-#include "Forgetp.h"
-#include "Change_Information.h"
-#include <fstream>
-#include <iostream>
-#include <string>
-#include <cstdlib> 
-#include <ctime>
-#include <thread>
-#include <chrono>
+#include "includes.h"
 
 using namespace std;
+namespace fs = std::filesystem;
 
 string username, email, password;
 string Login::username_file2;
@@ -77,7 +69,22 @@ bool Login::login()
 				Login::password_file2 = password_file;
 				Change_Information::userExit = false;
 				users.close();
-				return true;
+
+				string targetFolder = "Tasks_" + username_file;
+				if (fs::exists(targetFolder) && fs::is_directory(targetFolder)) {
+
+					// 3. KLASÖRE GİRİŞ (Dizini Değiştirme)
+					fs::current_path(targetFolder);
+
+					std::cout << "Folder entered. New Path: " << fs::current_path() << "\n";
+					return true;
+
+					// Artık burada oluşturulan bir dosya 'yeni_klasor' içinde oluşur
+				}
+				else {
+					std::cout << "Error: Folder dont found.\n";
+					return false;
+				}
 			}
 		}
 		users.close();
@@ -143,12 +150,55 @@ void Login::SingUp()
 		ofstream users("users.txt", ios::app);
 		users << username << " " << email << " " << password << endl;
 		users.close();
-		string setting = (username + "_settings") + ".txt";
-		ofstream settingf(setting);
-		bool dtfl = false;
-		bool nts = false;
-		settingf << "DTF : " << dtfl << " NTS : " << nts << endl;
-		settingf.close();
+
+		if (fs::create_directory("Tasks_" + username)) {
+			std::cout << "Folder succesfully created.\n";
+		}
+		else {
+			// Klasör zaten varsa veya hata oluştuysa false döner
+			if (fs::exists("Tasks_" + username)) {
+				std::cout << "The folder already exists.\n";
+			}
+			else {
+				std::cout << "Folder dont created.\n";
+			}
+		}
+
+		string targetFolder = "Tasks_" + username;
+		if (fs::exists(targetFolder) && fs::is_directory(targetFolder)) {
+
+			// 3. KLASÖRE GİRİŞ (Dizini Değiştirme)
+			fs::current_path(targetFolder);
+
+			std::cout << "Folder entered. New Path: " << fs::current_path() << "\n";
+
+			string setting = (username + "_settings") + ".txt";
+			ofstream settingf(setting);
+			bool dtfl = false;
+			bool nts = false;
+			settingf << "DTF : " << dtfl << " NTS : " << nts << endl;
+			settingf.close();
+
+			if (fs::create_directory("Tasks")) {
+				std::cout << "Folder succesfully created.\n";
+			}
+			else {
+				if (fs::exists("Tasks")) {
+					std::cout << "The folder already exists.\n";
+				}
+				else {
+					std::cout << "Folder dont created.\n";
+				}
+			}
+
+			fs::path mevcutYol = fs::current_path();
+			fs::current_path(mevcutYol.parent_path());
+
+		}
+		else {
+			std::cout << "Error: Folder dont found.\n";
+		}
+
 		Clearl();
 	}
 
