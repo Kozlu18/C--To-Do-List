@@ -123,6 +123,30 @@ bool Login::Check()
 	}
 }
 
+void save_settings()
+{
+	string setting = (username + "_settings") + ".txt";
+
+	ofstream settingf(setting);
+
+	bool dtfl = false;
+	bool nts = false;
+
+	settingf << "DTF : " << dtfl << " NTS : " << nts << endl;
+	settingf.close();
+}
+
+void save_listname()
+{
+
+	string nlistn = (username + "_List") + ".txt";
+
+	ofstream list(nlistn);
+	string tname = "Tasks";
+	list << tname << endl;
+	list.close();
+}
+
 void Login::SingUp()
 {
 	cout << "Please enter username :" << endl;
@@ -172,12 +196,8 @@ void Login::SingUp()
 
 			std::cout << "Folder entered. New Path: " << fs::current_path() << "\n";
 
-			string setting = (username + "_settings") + ".txt";
-			ofstream settingf(setting);
-			bool dtfl = false;
-			bool nts = false;
-			settingf << "DTF : " << dtfl << " NTS : " << nts << endl;
-			settingf.close();
+			save_settings();
+			save_listname();
 
 			if (fs::create_directory("Tasks")) {
 				std::cout << "Folder succesfully created.\n";
