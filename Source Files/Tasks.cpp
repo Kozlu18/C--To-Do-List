@@ -458,9 +458,23 @@ void show_tasks()
 
 void Tasks::TasksPage()
 {
-	if (fs::exists("Tasks") && fs::is_directory("Tasks")) {
+	string listname4;
+	NList::show_list();
+	bool lntf = false;
+	while (!lntf)
+	{
+		cout << "Please enter list name : ";
+		cin >> listname4;
+		string nlistn = (Login::username_file2 + "_List") + ".txt";
+		ifstream list(nlistn);
+		string listname_file;
+		while (list >> listname_file)
+			if (listname_file == listname4)
+				lntf = true;
+	}
+	if (fs::exists(listname4) && fs::is_directory(listname4)) {
 
-		fs::current_path("Tasks");
+		fs::current_path(listname4);
 
 		std::cout << "Folder entered. New Path: " << fs::current_path() << "\n";
 	}
