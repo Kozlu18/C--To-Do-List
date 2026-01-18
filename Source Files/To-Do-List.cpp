@@ -71,6 +71,7 @@ int main()
                 login2 = false;
                 fs::path mevcutYol = fs::current_path();
                 fs::current_path(mevcutYol.parent_path());
+                Clear();
             }
             else
                 cout << "You entered wrong key, Please try again." << endl;
