@@ -178,15 +178,6 @@ void Login::SingUp()
 		if (fs::create_directory("Tasks_" + username)) {
 			std::cout << "Folder succesfully created.\n";
 		}
-		else {
-			// Klasör zaten varsa veya hata oluştuysa false döner
-			if (fs::exists("Tasks_" + username)) {
-				std::cout << "The folder already exists.\n";
-			}
-			else {
-				std::cout << "Folder dont created.\n";
-			}
-		}
 
 		string targetFolder = "Tasks_" + username;
 		if (fs::exists(targetFolder) && fs::is_directory(targetFolder)) {
@@ -202,14 +193,6 @@ void Login::SingUp()
 			if (fs::create_directory("Tasks")) {
 				std::cout << "Folder succesfully created.\n";
 			}
-			else {
-				if (fs::exists("Tasks")) {
-					std::cout << "The folder already exists.\n";
-				}
-				else {
-					std::cout << "Folder dont created.\n";
-				}
-			}
 
 			fs::path mevcutYol = fs::current_path();
 			fs::current_path(mevcutYol.parent_path());
@@ -218,8 +201,6 @@ void Login::SingUp()
 		else {
 			std::cout << "Error: Folder dont found.\n";
 		}
-
 		Clearl();
 	}
-
 }
