@@ -234,12 +234,14 @@ void important_tasks()
 {
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
+	string mimportant = (Login::username_file2 + "_markedimportant") + ".txt";
 	vector<string>* import2 = new vector<string>;
 
 	bool important1 = true;
 	while (important1)
 	{
 		cout << "I : Mark the task as important : " << endl;
+		cout << "M : Mark as done important tasks : " << endl;
 		cout << "S : Show the important tasks : " << endl;
 		cout << "E : Exit : " << endl;
 		cout << "What your choice : ";
@@ -278,6 +280,45 @@ void important_tasks()
 				tasks2.close();
 			}
 		}
+		else if (iact == 'M' || iact == 'm')
+		{
+			show_important(important, import2);
+
+			cout << "Please enter the task id" << endl;
+
+			int idx;
+			cin >> idx;
+
+			string hedef_cumle = (*import2)[idx];
+			stringstream ss(hedef_cumle);
+			string kelimeler;
+			vector<string>* word = new vector<string>;
+
+			while (ss >> kelimeler)
+				word->push_back(kelimeler);
+
+			ofstream markedtasks3(mimportant, ios::app);
+
+			if (markedtasks3.is_open())
+			{
+				for (int i = 0; i < word->size(); i++)
+				{
+					if ((*word)[i] == "To")
+						continue;
+					if ((*word)[i] == "be")
+						continue;
+					if ((*word)[i] == "done")
+						continue;
+					if ((*word)[i] == "*")
+						continue;
+					markedtasks3 << (*word)[i] << " ";
+
+				}
+				markedtasks3 << "Done" << endl;
+				markedtasks3.close();
+			}
+
+		}
 		else if (iact == 'S' || iact == 's')
 		{
 			ifstream important2(important);
@@ -288,8 +329,17 @@ void important_tasks()
 			{
 				cout << *sentence2 << endl;
 			}
-			this_thread::sleep_for(chrono::seconds(3));
 			important2.close();
+
+			cout << "Marked as important tasks." << endl;
+
+			ifstream markedtask3(mimportant);
+			if (!markedtask3.is_open())
+				cerr << "Error : Txt file is not opened." << endl;
+			while (getline(markedtask3, *sentence2))
+				cout << *sentence2 << endl;
+			this_thread::sleep_for(chrono::seconds(3));
+			markedtask3.close();
 		}
 		else if (iact == 'E' || iact == 'e')
 			important1 = false;
