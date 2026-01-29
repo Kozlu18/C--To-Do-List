@@ -1,6 +1,11 @@
 #include "includes.h"
 namespace fs = std::filesystem;
 
+vector<string>* import2 = new vector<string>;
+vector<string>* itask = new vector<string>;
+vector<string>* tasks2 = new vector<string>;
+vector<string>* task = new vector<string>;
+
 void Clear15()
 {
 #if defined _WIN32
@@ -66,8 +71,9 @@ void Add_Tasks()
 	filename.close();
 }
 
-void save_i(const string& important, vector<string>* itask = new vector<string>)
+void save_i(const string& important)
 {
+	itask->clear();
 	ifstream important2(important);
 	if (!important2.is_open())
 		cerr << "Error : Unable important txt file." << endl;
@@ -82,8 +88,9 @@ void save_i(const string& important, vector<string>* itask = new vector<string>)
 	important2.close();
 }
 
-void save_t(const string& tasks, vector<string>* tasks2 = new vector<string>)
+void save_t(const string& tasks)
 {
+	tasks2->clear();
 	ifstream task(tasks);
 	if (!task.is_open())
 		cerr << "Error : Unable tasks txt file." << endl;
@@ -103,9 +110,6 @@ void select2()
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
 
-	vector<string>* itask = new vector<string>;
-	vector<string>* tasks2 = new vector<string>;
-
 	cout << "I : Delete important tasks : " << endl;
 	cout << "D : Delete tasks : " << endl;
 
@@ -114,7 +118,7 @@ void select2()
 
 	if (sact == 'I' || sact == 'i')
 	{
-		save_i(important, itask);
+		save_i(important);
 		cout << "Please enter the tasks id : " << endl;
 
 		int idx;
@@ -147,7 +151,7 @@ void select2()
 	}
 	else if (sact == 'D' || sact == 'd')
 	{
-		save_t(tasks, tasks2);
+		save_t(tasks);
 		cout << "Please enter the tasks id : ";
 
 		int idx;
@@ -204,8 +208,9 @@ void delete_tasks()
 	}
 }
 
-void show_important(const string& tasks, vector<string>* import2 = new vector<string>)
+void show_important(const string& tasks)
 {
+	import2->clear();
 	ifstream tasks2(tasks);
 	if (!tasks2.is_open())
 		cerr << "Error : Tasks file is not opened." << endl;
@@ -235,11 +240,11 @@ void important_tasks()
 	string tasks = (Login::username_file2 + "_tasks") + ".txt";
 	string important = (Login::username_file2 + "_important") + ".txt";
 	string mimportant = (Login::username_file2 + "_markedimportant") + ".txt";
-	vector<string>* import2 = new vector<string>;
 
 	bool important1 = true;
 	while (important1)
 	{
+
 		cout << "I : Mark the task as important : " << endl;
 		cout << "M : Mark as done important tasks : " << endl;
 		cout << "S : Show the important tasks : " << endl;
@@ -253,7 +258,7 @@ void important_tasks()
 		{
 			ofstream important2(important, ios::app);
 
-			show_important(tasks, import2);
+			show_important(tasks);
 
 			cout << "Please enter task ID number : ";
 			int j;
@@ -282,7 +287,7 @@ void important_tasks()
 		}
 		else if (iact == 'M' || iact == 'm')
 		{
-			show_important(important, import2);
+			show_important(important);
 
 			cout << "Please enter the task id" << endl;
 
@@ -318,6 +323,19 @@ void important_tasks()
 				markedtasks3.close();
 			}
 
+			deletei(important);
+			ofstream important2(important, ios::app);
+
+			if (important2.is_open())
+			{
+				for (int i = 0; i < import2->size(); i++)
+				{
+					if (i == idx)
+						continue;
+					important2 << (*import2)[i] << endl;
+				}
+				important2.close();
+			}
 		}
 		else if (iact == 'S' || iact == 's')
 		{
@@ -348,8 +366,9 @@ void important_tasks()
 	}
 }
 
-void show(const string& filename, vector<string>* task = new vector<string>)
+void show(const string& filename)
 {
+	task->clear();
 	ifstream tasks(filename);
 	if (!tasks.is_open())
 	{
@@ -392,10 +411,9 @@ void mark_task()
 		char maction;
 		cin >> maction;
 
-		vector<string>* task = new vector<string>;
 		if (maction == 'M' || maction == 'm')
 		{
-			show(tasks, task);
+			show(tasks);
 			cout << "Please enter the task ID number : ";
 
 			int N;
